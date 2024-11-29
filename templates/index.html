@@ -4,76 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Price Prediction</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        /* Custom styles */
+        /* Custom global styles */
         body {
-            background-color: #f4f4f9;
-            padding-top: 20px;
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            max-width: 800px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
         }
         .instructions {
-            font-size: 1.1em;
+            text-align: center;
+            font-size: 1.2rem;
             margin-bottom: 20px;
+            color: #555;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         .result {
             background-color: #e3f2fd;
             padding: 20px;
             border-radius: 8px;
-            margin-top: 20px;
+            margin-top: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .result h2 {
+            font-size: 1.5rem;
+            color: #007bff;
+        }
+        .result p {
+            font-size: 1.1rem;
+            color: #333;
         }
         .error {
             color: red;
             font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
         }
         .button {
             display: inline-block;
-            padding: 10px 20px;
-            margin-top: 10px;
+            padding: 12px 20px;
             background-color: #007bff;
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            margin-top: 10px;
         }
         .button:hover {
             background-color: #0056b3;
+        }
+
+        /* Responsive styling for mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .form-group label {
+                font-size: 1rem;
+            }
+            input[type="text"], select, button {
+                font-size: 1rem;
+                padding: 10px;
+            }
+            .result {
+                padding: 15px;
+            }
+            .result h2 {
+                font-size: 1.2rem;
+            }
+            .result p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mb-4">Stock Price Prediction</h1>
+        <h1>Stock Price Prediction</h1>
         
         <!-- Instructions for the user -->
-        <p class="instructions text-center">
-            Enter a valid stock ticker symbol (e.g., "AAPL" for Apple, "GOOG" for Google). 
-            Then, specify the future date for prediction.
+        <p class="instructions">
+            Enter a valid stock symbol (e.g., "AAPL" for Apple, "GOOG" for Google). 
         </p>
 
         <!-- Form to enter stock ticker, model, and future date -->
-        <form method="POST" action="/" class="mb-4">
-            <div class="mb-3">
-                <label for="ticker" class="form-label">Enter Stock Ticker:</label>
-                <input type="text" class="form-control" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ request.form['ticker'] if request.form['ticker'] else '' }}">
+        <form method="POST" action="/">
+            <div class="form-group">
+                <label for="ticker">Enter Stock:</label>
+                <input type="text" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ request.form['ticker'] if request.form['ticker'] else '' }}">
             </div>
 
-            <div class="mb-3">
-                <label for="model" class="form-label">Select Model:</label>
-                <select name="model" id="model" class="form-select">
+            <div class="form-group">
+                <label for="model">Select Model:</label>
+                <select name="model" id="model">
                     <option value="rnn" {% if request.form['model'] == 'rnn' %}selected{% endif %}>RNN</option>
                     <option value="lstm" {% if request.form['model'] == 'lstm' %}selected{% endif %}>LSTM</option>
                 </select>
             </div>
             
-            <div class="mb-3">
-                <label for="future_date" class="form-label">Enter Future Date (dd-mm-yyyy):</label>
-                <input type="text" class="form-control" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ request.form['future_date'] if request.form['future_date'] else '' }}">
+            <div class="form-group">
+                <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
+                <input type="text" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ request.form['future_date'] if request.form['future_date'] else '' }}">
             </div>
             
-            <button type="submit" class="btn btn-primary w-100">Get Prediction</button>
+            <button type="submit">Get Prediction</button>
         </form>
 
         <!-- Display prediction results -->
@@ -87,11 +169,8 @@
         {% endif %}
 
         {% if error %}
-        <p class="error text-center">{{ error }}</p>
+        <p class="error">{{ error }}</p>
         {% endif %}
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
