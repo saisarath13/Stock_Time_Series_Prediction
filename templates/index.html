@@ -4,33 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Price Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f4f4f9;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .instructions {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .result {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Stock Price Prediction</h1>
+        <h1 class="text-center mb-4">Stock Price Prediction</h1>
         
         <!-- Instructions for the user -->
-        <p class="instructions">
+        <p class="instructions text-center">
             Enter a valid stock ticker symbol (e.g., "AAPL" for Apple, "GOOG" for Google). 
             Then, specify the future date for prediction.
         </p>
 
         <!-- Form to enter stock ticker, model, and future date -->
-        <form method="POST" action="/">
-            <label for="ticker">Enter Stock Ticker:</label>
-            <input type="text" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ request.form['ticker'] if request.form['ticker'] else '' }}">
+        <form method="POST" action="/" class="mb-4">
+            <div class="mb-3">
+                <label for="ticker" class="form-label">Enter Stock Ticker:</label>
+                <input type="text" class="form-control" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ request.form['ticker'] if request.form['ticker'] else '' }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="model" class="form-label">Select Model:</label>
+                <select name="model" id="model" class="form-select">
+                    <option value="rnn" {% if request.form['model'] == 'rnn' %}selected{% endif %}>RNN</option>
+                    <option value="lstm" {% if request.form['model'] == 'lstm' %}selected{% endif %}>LSTM</option>
+                </select>
+            </div>
             
-            <label for="model">Select Model:</label>
-            <select name="model" id="model">
-                <option value="rnn" {% if request.form['model'] == 'rnn' %}selected{% endif %}>RNN</option>
-                <option value="lstm" {% if request.form['model'] == 'lstm' %}selected{% endif %}>LSTM</option>
-            </select>
+            <div class="mb-3">
+                <label for="future_date" class="form-label">Enter Future Date (dd-mm-yyyy):</label>
+                <input type="text" class="form-control" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ request.form['future_date'] if request.form['future_date'] else '' }}">
+            </div>
             
-            <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
-            <input type="text" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ request.form['future_date'] if request.form['future_date'] else '' }}">
-            
-            <button type="submit">Get Prediction</button>
+            <button type="submit" class="btn btn-primary w-100">Get Prediction</button>
         </form>
 
         <!-- Display prediction results -->
@@ -38,16 +81,17 @@
         <div class="result">
             <h2>Prediction for {{ ticker }} on {{ future_date }}:</h2>
             <p><strong>Model:</strong> {{ model }}</p>
-            
             <p><strong>Predicted Stock Price:</strong> ${{ predictions[-1] | round(2) }}</p>
-            
             <a href="/" class="button">Try Another</a>
         </div>
         {% endif %}
 
         {% if error %}
-        <p class="error">{{ error }}</p>
+        <p class="error text-center">{{ error }}</p>
         {% endif %}
     </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
