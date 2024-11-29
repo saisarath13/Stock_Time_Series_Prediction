@@ -13,7 +13,7 @@
         }
 
         .container {
-            max-width: 500px; /* Centered and limited width */
+            max-width: 500px;
             margin: 40px auto;
             background-color: #fff;
             padding: 20px;
@@ -38,7 +38,7 @@
         form {
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Space between form elements */
+            gap: 20px;
         }
 
         .form-group {
@@ -76,6 +76,20 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .result, .error {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+
+        .result h2 {
+            color: #333;
+        }
+
+        .error {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -86,13 +100,13 @@
         <!-- Form -->
         <form method="POST" action="/">
             <div class="form-group">
-                <label for="ticker">Enter Stock:</label>
-                <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL">
+                <label for="ticker">Enter Stock Symbol:</label>
+                <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL" required>
             </div>
 
             <div class="form-group">
                 <label for="model">Select Model:</label>
-                <select name="model" id="model">
+                <select name="model" id="model" required>
                     <option value="rnn">RNN</option>
                     <option value="lstm">LSTM</option>
                 </select>
@@ -100,11 +114,29 @@
 
             <div class="form-group">
                 <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
-                <input type="text" id="future_date" name="future_date" placeholder="e.g., 30-11-2024">
+                <input type="text" id="future_date" name="future_date" placeholder="e.g., 30-11-2024" required>
             </div>
 
             <button type="submit">Get Prediction</button>
         </form>
+
+        <!-- Display prediction result -->
+        {% if predictions is not none %}
+        <div class="result">
+            <h2>Prediction Results</h2>
+            <p><strong>Stock Symbol:</strong> {{ ticker }}</p>
+            <p><strong>Model Used:</strong> {{ model }}</p>
+            <p><strong>Future Date:</strong> {{ future_date }}</p>
+            <p><strong>Predicted Price:</strong> ${{ "%.2f" | format(predictions[-1]) }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Display error message -->
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>
