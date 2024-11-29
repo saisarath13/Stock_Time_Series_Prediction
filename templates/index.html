@@ -90,6 +90,25 @@
         .error {
             color: red;
         }
+
+        .try-another {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .try-another button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .try-another button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -128,6 +147,11 @@
             <p><strong>Model Used:</strong> {{ model }}</p>
             <p><strong>Future Date:</strong> {{ future_date }}</p>
             <p><strong>Predicted Price:</strong> ${{ "%.2f" | format(predictions[-1]) }}</p>
+        </div>
+
+        <!-- Try another button -->
+        <div class="try-another">
+            <button onclick="window.location.href='/'">Try Another</button>
         </div>
         {% endif %}
 
