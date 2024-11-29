@@ -46,17 +46,17 @@ def load_models():
     model_dir = 'models/'
     os.makedirs(model_dir, exist_ok=True)
 
-    # Paths to local models
     rnn_model_path = os.path.join(model_dir, 'fine_tuned_rnn_model.keras')
     lstm_model_path = os.path.join(model_dir, 'fine_tuned_lstm_model.keras')
 
-    # Download models if they do not exist locally
+    print(f"RNN Model Path: {rnn_model_path}")
+    print(f"LSTM Model Path: {lstm_model_path}")
+
     if not os.path.exists(rnn_model_path):
         download_model_from_s3(rnn_model_key, rnn_model_path)
     if not os.path.exists(lstm_model_path):
         download_model_from_s3(lstm_model_key, lstm_model_path)
 
-    # Load the fine-tuned models
     rnn_model = load_model(rnn_model_path)
     lstm_model = load_model(lstm_model_path)
 
